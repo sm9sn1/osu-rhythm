@@ -30,28 +30,16 @@ namespace ppcalc
                 edgeEnd = _end;
                 edgeStart = _start;
                 stringDepth = parent.stringDepth + (_end - _start) + 1;
-                if (stringDepth <= 0)
-                {
-                    Console.WriteLine("badnode");
-                }
             }
 
             public Node getChild(char c)
             {
-                /*if (this.child == null)
+                Node temp = this.child;
+                while (temp != null && s[temp.edgeStart] != c)
                 {
-                    return null;
+                    temp = temp.sibling;
                 }
-                else
-                {*/
-                    Node temp = this.child;
-                    while (temp != null && s[temp.edgeStart] != c)
-                    {
-                        temp = temp.sibling;
-                    }
-                    //null if not found or desired node
-                    return temp;
-                //}
+                return temp;
             }
 
             public Node addChild(Node newNode)
@@ -222,10 +210,6 @@ namespace ppcalc
                         {
                             Node newInternal = parent.addChild(new Node(parent, giveMeAnID(false), start, start + i - 1));
                             next.edgeStart += i;
-                            if (next.stringDepth <= 0)
-                            {
-                                Console.WriteLine("badnode");
-                            }
                             next.parent = newInternal;
                             Node newLeaf = new Node(newInternal, giveMeAnID(true), start + i, end);
                             newInternal.child = next;
@@ -239,7 +223,7 @@ namespace ppcalc
                 parent = next;
                 next = next.getChild(s[start]);
             }
-            Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~THERES BEEN AN ERROR~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+            Console.WriteLine("~~~~~~~THERES BEEN AN ERROR~~~~~~~\n");
             return null;
         }
 
