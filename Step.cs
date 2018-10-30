@@ -1,15 +1,19 @@
 ﻿namespace ppcalc
 {
-    class Step
+    class Note
     {
-        int distance;
-        int angle;
-        //slider shit
+        double duration;
+        int quantity;
+
+        public Note(doublt _duration, int _quantity) {
+            duration = _duration;
+            quantity = _quantity;
+        }
 
         public override bool Equals(object obj)
         {
             Step rhs = (Step)obj;
-            return this.distance == rhs.distance && this.angle == rhs.angle;
+            return this.duration == rhs.duration && this.quantity == rhs.quantity;
         }
 
         /*public static bool operator == (Step lhs, Step rhs)
