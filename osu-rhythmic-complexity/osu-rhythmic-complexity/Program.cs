@@ -38,28 +38,29 @@ namespace ppcalc
                 {
                     string[] noteData = line.Split(',');
                     //note type is stored as a bitmap
-                    notes.append(new Note(Int32.Parse(noteData[2]), 1, Int32.Parse(noteData[3]) & 11));
+                    notes.Add(new Note(Int32.Parse(noteData[2]), 1, (NoteType)(Int32.Parse(noteData[3]) & 11)));
                 }
             }
             //timing value in file is milliseconds since map start
-            for (int i = notes.length; i > 0; i--)
+            for (int i = notes.Length; i > 0; i--)
             {
                 //calculate time until next note
                 notes[i - 1].duration = notes[i].duration - notes[i - 1].duration;
             }
             //last note has no next note
-            notes[notes.length - 1].duration = 0;
+            notes[notes.Length - 1].duration = 0;
             return notes;
         }
 
-        Note[] compress(Note[] notes) {
-            for (int i = notes.length; i > 0; i--;) {
+        static Note[] compress(Note[] notes) {
+            for (int i = notes.Length - 1; i > 0; i--) {
                 //if 2 sequential notes are equal, group them together
-                if (notes[i] = notes[i - 1]) {
-                    notes[i - 1].quantity = notes[i].quantity++;
-                    notes.removeAt(i);
+                if (notes[i] == notes[i - 1]) {
+                    notes[i - 1].quantity += notes[i].quantity;
+                    notes.RemoveAt(i);
                 }
-            } 
+            }
+            return notes;
         }
     }
 }

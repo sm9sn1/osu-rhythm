@@ -5,7 +5,7 @@
         circle = 1, slider = 2, spinner = 8
     }
 
-    class Note
+    internal class Note
     {
         public double duration { get; set; }
         public int quantity { get; set; }
@@ -20,7 +20,7 @@
         public override bool Equals(object obj)
         {
             Note rhs = (Note)obj;
-            return this.duration == rhs.duration && this.type = rhs.type;
+            return this.duration == rhs.duration && this.type == rhs.type;
         }
 
         /*public static bool operator == (Note lhs, Note rhs)
