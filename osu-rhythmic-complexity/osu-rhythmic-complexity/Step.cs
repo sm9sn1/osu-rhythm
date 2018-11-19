@@ -1,11 +1,14 @@
-﻿namespace ppcalc
+﻿using System;
+using System.Collections.Generic;
+
+namespace ppcalc
 {
     enum NoteType 
     {
         circle = 1, slider = 2, spinner = 8
     }
 
-    internal class Note
+    class Note : IComparable<Note>, IEquatable<Note>
     {
         public double duration { get; set; }
         public int quantity { get; set; }
@@ -17,13 +20,42 @@
             type = _type;
         }
 
-        public override bool Equals(object obj)
+        public bool Equals(Note other)
         {
-            Note rhs = (Note)obj;
+            Note rhs = (Note)other;
             return this.duration == rhs.duration && this.type == rhs.type;
         }
 
-        /*public static bool operator == (Note lhs, Note rhs)
+        public int CompareTo(Note other)
+        {
+            if (other == null)
+            {
+                return 1;
+            }
+            return duration.CompareTo(other.duration);
+        }
+
+        public static bool operator >(Note lhs, Note rhs)
+        {
+            return lhs.CompareTo(rhs) == 1;
+        }
+
+        public static bool operator <(Note lhs, Note rhs)
+        {
+            return lhs.CompareTo(rhs) == -1;
+        }
+
+        public static bool operator >=(Note lhs, Note rhs)
+        {
+            return lhs.CompareTo(rhs) >= 0;
+        }
+
+        public static bool operator <=(Note lhs, Note rhs)
+        {
+            return lhs.CompareTo(rhs) <= 0;
+        }
+
+        public static bool operator ==(Note lhs, Note rhs)
         {
             if (object.ReferenceEquals(lhs, null))
             {
@@ -32,13 +64,22 @@
             return lhs.Equals(rhs);
         }
 
-        public static bool operator != (Note lhs, Note rhs)
+        public static bool operator !=(Note lhs, Note rhs)
         {
             if (object.ReferenceEquals(lhs, null))
             {
                 return object.ReferenceEquals(rhs, null);
             }
             return !lhs.Equals(rhs);
-        }*/
+        }
+
+        public override int GetHashCode() {
+            return (int)duration;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj);
+        }
     }
 }

@@ -1,40 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ppcalc
 {
-    class SuffixTrie
+    class SuffixTrie<T> where T : class, IComparable<T>
     {
-        class Node
+        class Node<U> where U : class, IComparable<U>
         {
-            public Node child;
-            public Node sibling;
-            public Node link;
-            public Node parent;
+            public Node<U> child;
+            public Node<U> sibling;
+            public Node<U> link;
+            public Node<U> parent;
             public int ID;
             public int edgeStart;
             public int edgeEnd;
-            public int stringDepth;
+            public int depth;
 
             public Node(int _ID)
             {
                 link = parent = child = sibling = null;
                 ID = _ID;
-                stringDepth = edgeStart = edgeEnd = 0;
+                depth = edgeStart = edgeEnd = 0;
             }
 
-            public Node(Node _parent, int _ID, int _start, int _end)
+            public Node(Node<U> _parent, int _ID, int _start, int _end)
             {
                 link = sibling = child = null;
                 parent = _parent;
                 ID = _ID;
                 edgeEnd = _end;
                 edgeStart = _start;
-                stringDepth = parent.stringDepth + (_end - _start) + 1;
+                depth = parent.depth + (_end - _start) + 1;
             }
 
-            public Node getChild(char c)
+            public Node<U> getChild(T c)
             {
-                Node temp = this.child;
+                Node<U> temp = this.child;
                 while (temp != null && s[temp.edgeStart] != c)
                 {
                     temp = temp.sibling;
@@ -42,7 +43,7 @@ namespace ppcalc
                 return temp;
             }
 
-            public Node addChild(Node newNode)
+            public Node<U> addChild(Node<U> newNode)
             {
                 if (this.child == null)
                 {
@@ -50,7 +51,7 @@ namespace ppcalc
                 }
                 else
                 {
-                    if (s[newNode.edgeStart] < s[this.child.edgeStart])
+                    if (s[newNode.edgeStart].CompareTo(s[this.child.edgeStart]) < 0)
                     {
                         newNode.sibling = this.child;
                         this.child = newNode;
@@ -63,9 +64,9 @@ namespace ppcalc
                     }
                     else
                     {
-                        Node temp = this.child.sibling;
-                        Node prevTemp = this.child;
-                        while (temp != null && s[newNode.edgeStart] > s[temp.edgeStart])
+                        Node<U> temp = this.child.sibling;
+                        Node<U> prevTemp = this.child;
+                        while (temp != null && s[newNode.edgeStart].CompareTo(s[temp.edgeStart]) > 0)
                         {
                             prevTemp = temp;
                             temp = temp.sibling;
@@ -93,16 +94,14 @@ namespace ppcalc
 
 		int leafID = 0;
         int internalID;
-        static string s;
-        static string alphabet;
-		Node root;
+        static List<T> s;
+		Node<T> root;
 
-        public SuffixTrie(string _s, string _Alphabet)
+        public SuffixTrie(List<T> _s)
         {
             s = _s;
-            alphabet = _Alphabet;
-            internalID = s.Length + 1;
-            root = new Node(giveMeAnID(true));
+            internalID = s.Count + 1;
+            root = new Node<T>(giveMeAnID(true));
             root.link = root.parent = root;
             addSuffixes();
         }
@@ -112,14 +111,14 @@ namespace ppcalc
             return isLeafID ? leafID++ : internalID++;
         }
 
-        void printChildren(Node n)
+        void printChildren(Node<T> n)
         {
             if (n.isLeaf())
             {
                 Console.WriteLine("Leaf ID = " + n.ID);
                 return;
             }
-            Node next = n.child;
+            Node<T> next = n.child;
             while (next != null)
             {
                 printChildren(next);
@@ -127,10 +126,10 @@ namespace ppcalc
             }
         }
 
-        Node nodeHop(Node vPrime, int betaStart, int betaEnd)
+        Node<T> nodeHop(Node<T> vPrime, int betaStart, int betaEnd)
         {
-            Node cur = vPrime;
-            Node temp;
+            Node<T> cur = vPrime;
+            Node<T> temp;
             int betaremain = betaEnd - betaStart + 1;
 
             while (betaremain > 0)
@@ -154,12 +153,12 @@ namespace ppcalc
                     }
                     if (s[betaStart + i] != s[cur.edgeStart + i])
                     {
-                        Node newInternal = cur.parent.addChild(new Node(cur.parent, internalID++, betaStart, betaStart + i - 1));
+                        Node<T> newInternal = cur.parent.addChild(new Node<T>(cur.parent, internalID++, betaStart, betaStart + i - 1));
                         newInternal.child = cur;
                         cur.sibling = null;
                         cur.parent = newInternal;
                         cur.edgeStart += i;
-                        if (cur.stringDepth <= 0)
+                        if (cur.depth <= 0)
                         {
                             Console.WriteLine("badnode");
                         }
@@ -170,16 +169,16 @@ namespace ppcalc
             return cur;
         }
 
-        void findCommon(Node n, Node deepest)
+        void findCommon(Node<T> n, Node<T> deepest)
         {
             if (!n.isLeaf())
             {
-                if (n.stringDepth > deepest.stringDepth)
+                if (n.depth > deepest.depth)
                 {
                     deepest = n;
                 }
             }
-            Node next = n.child;
+            Node<T> next = n.child;
             while (next != null)
             {
                 findCommon(next, deepest);
@@ -187,16 +186,16 @@ namespace ppcalc
             }
         }
 
-        Node FindPath(Node v, int start, int end)
+        Node<T> FindPath(Node<T> v, int start, int end)
         {
-            Node next = v.getChild(s[start]);
-            Node parent = v;
+            Node<T> next = v.getChild(s[start]);
+            Node<T> parent = v;
             int i;
             while (start <= end)
             {
                 if (next == null)
                 {
-                    return parent.addChild(new Node(parent, giveMeAnID(true), start, end));
+                    return parent.addChild(new Node<T>(parent, giveMeAnID(true), start, end));
                 }
                 else
                 {
@@ -208,10 +207,10 @@ namespace ppcalc
                         }
                         if (s[next.edgeStart + i] != s[start + i])
                         {
-                            Node newInternal = parent.addChild(new Node(parent, giveMeAnID(false), start, start + i - 1));
+                            Node<T> newInternal = parent.addChild(new Node<T>(parent, giveMeAnID(false), start, start + i - 1));
                             next.edgeStart += i;
                             next.parent = newInternal;
-                            Node newLeaf = new Node(newInternal, giveMeAnID(true), start + i, end);
+                            Node<T> newLeaf = new Node<T>(newInternal, giveMeAnID(true), start + i, end);
                             newInternal.child = next;
                             next.sibling = null;
                             newInternal.addChild(newLeaf);
@@ -227,64 +226,64 @@ namespace ppcalc
             return null;
         }
 
-        Node case1a(Node leaf, int start, int end)
+        Node<T> case1a(Node<T> leaf, int start, int end)
         {
-            Node v = leaf.parent.link;
-            return FindPath(v, start + v.stringDepth, end);
+            Node<T> v = leaf.parent.link;
+            return FindPath(v, start + v.depth, end);
         }
 
-        Node case1b(Node leaf, int start, int end)
+        Node<T> case1b(Node<T> leaf, int start, int end)
         {
             return FindPath(root, start, end);
         }
 
-        Node case2a(Node leaf, int start, int end)
+        Node<T> case2a(Node<T> leaf, int start, int end)
         {
-            Node uPrime = leaf.parent.parent;
+            Node<T> uPrime = leaf.parent.parent;
             int betaStart = leaf.parent.edgeStart;
             int betaEnd = leaf.parent.edgeEnd;
-            Node vPrime = uPrime.link;
-            Node v = nodeHop(vPrime, betaStart, betaEnd);
+            Node<T> vPrime = uPrime.link;
+            Node<T> v = nodeHop(vPrime, betaStart, betaEnd);
             leaf.parent.link = v;
-            return FindPath(v, start + v.stringDepth, end);
+            return FindPath(v, start + v.depth, end);
         }
 
-        Node case2b(Node leaf, int start, int end)
+        Node<T> case2b(Node<T> leaf, int start, int end)
         {
-            Node uPrime = leaf.parent.parent;
+            Node<T> uPrime = leaf.parent.parent;
             int betaStart = leaf.parent.edgeStart + 1;
             int betaEnd = leaf.parent.edgeEnd;
-            Node vPrime = uPrime.link;
-            Node v = nodeHop(vPrime, betaStart, betaEnd);
+            Node<T> vPrime = uPrime.link;
+            Node<T> v = nodeHop(vPrime, betaStart, betaEnd);
             leaf.parent.link = v;
-            return FindPath(v, start + v.stringDepth, end);
+            return FindPath(v, start + v.depth, end);
         }
 
         void addSuffixes()
         {
-            Node newLeaf = FindPath(root, 0, s.Length - 1);
-            for (int i = 1; i < (int)s.Length; i++)
+            Node<T> newLeaf = FindPath(root, 0, s.Count - 1);
+            for (int i = 1; i < (int)s.Count; i++)
             {
                 if (newLeaf.parent.link != null)
                 {
                     if (newLeaf.parent != root)
                     {
-                        newLeaf = case1a(newLeaf, i, s.Length - 1);
+                        newLeaf = case1a(newLeaf, i, s.Count - 1);
                     }
                     else
                     {
-                        newLeaf = case1b(newLeaf, i, s.Length - 1);
+                        newLeaf = case1b(newLeaf, i, s.Count - 1);
                     }
                 }
                 else
                 {
                     if (newLeaf.parent.parent != root)
                     {
-                        newLeaf = case2a(newLeaf, i, s.Length - 1);
+                        newLeaf = case2a(newLeaf, i, s.Count - 1);
                     }
                     else
                     {
-                        newLeaf = case2b(newLeaf, i, s.Length - 1);
+                        newLeaf = case2b(newLeaf, i, s.Count - 1);
                     }
                 }
             }
