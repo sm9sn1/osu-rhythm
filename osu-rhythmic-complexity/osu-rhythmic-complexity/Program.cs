@@ -11,16 +11,21 @@ namespace ppcalc
     {
         static void Main(string[] args)
         {
-            //TODO: use CLI for parameters instead of argv
-            if (args.Count() != 2)
+            if (args.Count() != 1)
             {
                 Console.WriteLine("You done messed up. Use the following form when calling this executable:");
-                Console.WriteLine("$<input file containing the map>");
+                Console.WriteLine("$<map's filename, must be .osu>");
+                return;
             }
-            SuffixTrie<Note> trie = new SuffixTrie<Note>(compress(buildArray(args[1])));
-
+            SuffixTrie<Note> trie = new SuffixTrie<Note>(compress(buildArray(args[0])));
+            List<List<Note>> subsequences = new List<List<Note>>();
+            trie.getSubSequences(subsequences);
+            subsequences.Sort((a, b) => a.Count.CompareTo(b.Count));
             //do the analysis
+            printSubsequences(subsequences);
+            printStats(subsequences);
             //output results
+            calculateScore(subsequences);
         }
 
         static List<Note> buildArray(string fileName)
@@ -61,6 +66,21 @@ namespace ppcalc
                 }
             }
             return notes;
+        }
+
+        private static void printSubsequences(List<List<Note>> subsequences)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void calculateScore(List<List<Note>> subsequences)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void printStats(List<List<Note>> subsequences)
+        {
+            throw new NotImplementedException();
         }
     }
 }

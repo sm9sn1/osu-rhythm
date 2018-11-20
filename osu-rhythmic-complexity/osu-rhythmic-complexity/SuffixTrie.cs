@@ -15,6 +15,7 @@ namespace ppcalc
             public int edgeStart;
             public int edgeEnd;
             public int depth;
+            public int frequency;
 
             public Node(int _ID)
             {
@@ -92,7 +93,7 @@ namespace ppcalc
             }
         }
 
-		int leafID = 0;
+        int leafID = 0;
         int internalID;
         static List<T> s;
 		Node<T> root;
@@ -104,6 +105,35 @@ namespace ppcalc
             root = new Node<T>(giveMeAnID(true));
             root.link = root.parent = root;
             addSuffixes();
+        }
+
+        public void getSubSequences(List<List<T>> subsequences)
+        {
+            getSubSequencesHelper(subsequences, root);
+        }
+
+        void getSubSequencesHelper(List<List<T>> subsequences, Node<T> current)
+        {
+            Node<T> temp = current.child;
+            while (temp.sibling != null)
+            {
+                getSubSequencesHelper(subsequences, temp);
+                subsequences.Add(getSubSequence(temp));
+            }
+        }
+
+        List<T> getSubSequence(Node<T> current)
+        {
+            List<T> notes = new List<T>();
+            notes.AddRange(s.GetRange(current.edgeStart, current.edgeEnd - current.edgeStart));
+            notes.Reverse(current.edgeStart, current.edgeEnd - current.edgeStart);
+            while ((current = current.parent) != root)
+            {
+                notes.AddRange(s.GetRange(current.edgeStart, current.edgeEnd - current.edgeStart));
+                notes.Reverse(current.edgeStart, current.edgeEnd - current.edgeStart);
+            }
+            notes.Reverse();
+            return notes;
         }
 
         int giveMeAnID(bool isLeafID)
@@ -124,6 +154,19 @@ namespace ppcalc
                 printChildren(next);
                 next = next.sibling;
             }
+        }
+
+        int calculateFrequencies(Node<T> current)
+        {
+            if (current.isLeaf())
+            {
+                return 1;
+            }
+            Node<T> curChild = current.child;
+            while (curChild != null) {
+                current.frequency += calculateFrequencies(curChild);
+            }
+            return current.frequency;
         }
 
         Node<T> nodeHop(Node<T> vPrime, int betaStart, int betaEnd)
