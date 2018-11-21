@@ -19,13 +19,12 @@ namespace ppcalc
             }
             SuffixTrie<Note> trie = new SuffixTrie<Note>(compress(buildArray(args[0])));
             List<List<Note>> subsequences = new List<List<Note>>();
+            //do the analysis
             trie.getSubSequences(subsequences);
             subsequences.Sort((a, b) => a.Count.CompareTo(b.Count));
-            //do the analysis
+            //output results
             printSubsequences(subsequences);
             printStats(subsequences);
-            //output results
-            calculateScore(subsequences);
         }
 
         static List<Note> buildArray(string fileName)
@@ -38,7 +37,7 @@ namespace ppcalc
                 while ((line = file.ReadLine()) != null && line != "[HitObjects]")
                 {
                 }
-                //1 notes per line, comma delineated
+                //1 note per line, comma delineated attributes
                 while ((line = file.ReadLine()) != null)
                 {
                     string[] noteData = line.Split(',');
@@ -70,17 +69,23 @@ namespace ppcalc
 
         private static void printSubsequences(List<List<Note>> subsequences)
         {
-            throw new NotImplementedException();
-        }
-
-        private static void calculateScore(List<List<Note>> subsequences)
-        {
-            throw new NotImplementedException();
+            foreach (List<Note> seq in subsequences)
+            {
+                Console.Write(seq.ToString());
+                Console.WriteLine(":" + seq[seq.Count - 1].quantity);
+            }
         }
 
         private static void printStats(List<List<Note>> subsequences)
         {
-            throw new NotImplementedException();
+            double average = 0;
+            foreach (List<Note> seq in subsequences)
+            {
+                average += seq.Last().quantity;
+            }
+            average /= subsequences.Count;
+            Console.WriteLine("Average # for each subsequence: " + average);
+            Console.WriteLine("Total subsequences: " + subsequences.Count);
         }
     }
 }
