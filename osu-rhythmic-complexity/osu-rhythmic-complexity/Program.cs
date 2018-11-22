@@ -11,10 +11,10 @@ namespace ppcalc
     {
         static void Main(string[] args)
         {
-            if (args.Count() != 1)
+            if (args.Count() != 2)
             {
-                Console.WriteLine("You done messed up. Use the following form when calling this executable:");
-                Console.WriteLine("$<map's filename, must be .osu>");
+                Console.WriteLine("Use the following form when calling this executable:");
+                Console.WriteLine("<this exe's name> <map's filename, must be .osu> $<output filename, including extension>");
                 Console.ReadKey();
                 return;
             }
@@ -22,10 +22,14 @@ namespace ppcalc
             List<List<Note>> subsequences = new List<List<Note>>();
             //do the analysis
             trie.getSubSequences(subsequences);
+            //sort the list but subsequence length
             subsequences.Sort((a, b) => a.Count.CompareTo(b.Count));
             //output results
-            printSubsequences(subsequences);
-            printStats(subsequences);
+            using (StreamWriter outfile = new StreamWriter(args[1]))
+            {
+                printSubsequences(subsequences, outfile);
+                printStats(subsequences, outfile);
+            }
             Console.ReadKey();
         }
 
@@ -69,16 +73,16 @@ namespace ppcalc
             return notes;
         }
 
-        private static void printSubsequences(List<List<Note>> subsequences)
+        private static void printSubsequences(List<List<Note>> subsequences, StreamWriter outfile)
         {
             foreach (List<Note> seq in subsequences)
             {
-                Console.Write(seq.ToString());
-                Console.WriteLine(":" + seq[seq.Count - 1].quantity);
+                outfile.Write(seq[seq.Count - 1].quantity + ":");
+                outfile.WriteLine(seq.ToString());
             }
         }
 
-        private static void printStats(List<List<Note>> subsequences)
+        private static void printStats(List<List<Note>> subsequences, StreamWriter outfile)
         {
             double average = 0;
             foreach (List<Note> seq in subsequences)
@@ -86,8 +90,8 @@ namespace ppcalc
                 average += seq.Last().quantity;
             }
             average /= subsequences.Count;
-            Console.WriteLine("Average # for each subsequence: " + average);
-            Console.WriteLine("Total subsequences: " + subsequences.Count);
+            outfile.WriteLine("Average # for each subsequence: " + average);
+            outfile.WriteLine("Total subsequences: " + subsequences.Count);
         }
     }
 }
