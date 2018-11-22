@@ -18,7 +18,7 @@ namespace ppcalc
                 Console.ReadKey();
                 return;
             }
-            SuffixTrie<Note> trie = new SuffixTrie<Note>(compress(buildArray(args[0])));
+            SuffixTrie trie = new SuffixTrie(compress(buildArray(args[0])));
             List<List<Note>> subsequences = new List<List<Note>>();
             //do the analysis
             trie.getSubSequences(subsequences);
