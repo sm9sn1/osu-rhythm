@@ -32,9 +32,9 @@ namespace ppcalc
                 edgeEnd = _end;
                 edgeStart = _start;
                 depth = parent.depth + (_end - _start) + 1;
-            }
 
-            public Node getChild(Node c)
+            }
+            public Node getChild(Note c)
             {
                 Node temp = this.child;
                 while (temp != null && s[temp.edgeStart] != c)
