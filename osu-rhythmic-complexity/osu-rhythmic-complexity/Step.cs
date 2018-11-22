@@ -28,7 +28,7 @@ namespace ppcalc
         public bool Equals(Note other)
         {
             Note rhs = (Note)other;
-            return this.duration == rhs.duration && this.type == rhs.type;
+            return this.duration == rhs.duration && this.type == rhs.type && this.quantity == rhs.quantity;
         }
 
         public int CompareTo(Note other)
