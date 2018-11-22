@@ -77,7 +77,7 @@ namespace ppcalc
         {
             foreach (List<Note> seq in subsequences)
             {
-                outfile.Write(seq[seq.Count - 1].quantity + ":");
+                outfile.Write(seq[seq.Count - 1].quantity + "/");
                 outfile.WriteLine(seq.ToString());
             }
         }

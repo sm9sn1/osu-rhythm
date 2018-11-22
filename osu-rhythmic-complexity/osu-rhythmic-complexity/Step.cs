@@ -20,6 +20,11 @@ namespace ppcalc
             type = _type;
         }
 
+        public override string ToString()
+        {
+            return type + ":" + quantity + ":" + duration;
+        }
+
         public bool Equals(Note other)
         {
             Note rhs = (Note)other;
