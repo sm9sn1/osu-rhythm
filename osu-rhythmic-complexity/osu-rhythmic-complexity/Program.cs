@@ -59,6 +59,7 @@ namespace ppcalc
             }
             //last note has no next note
             notes[notes.Count - 1].duration = 0;
+            //add 'terminal' note
             notes.Add(new Note(-1, -1, NoteType.circle));
             return notes;
         }
@@ -66,6 +67,7 @@ namespace ppcalc
         static List<Note> compress(List<Note> notes) {
             for (int i = notes.Count - 1; i > 0; i--) {
                 //if 2 sequential notes are equal, group them together
+                //if notes are +- 2 in duration, they are considered equal
                 if (Math.Abs(notes[i].duration - notes[i - 1].duration) <= 2 && notes[i].type == notes[i - 1].type) {
                     notes[i - 1].quantity += notes[i].quantity;
                     notes.RemoveAt(i);
@@ -99,6 +101,8 @@ namespace ppcalc
 
 /*
  TODO:
+    figure out how to handle length 1 subsequences properly 
+        only the first compressed sequence is counted
     bugfixing
         findpath out of bounds issue 
             start += i = s.Count, not sure if this is the incorrect state 

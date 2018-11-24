@@ -28,6 +28,7 @@ namespace ppcalc
         public bool Equals(Note other)
         {
             Note rhs = (Note)other;
+            //if notes are +- 2 in duration, they are considered equal
             return Math.Abs(this.duration - rhs.duration) <= 2 && this.type == rhs.type && this.quantity == rhs.quantity;
         }
 
