@@ -133,6 +133,10 @@ namespace ppcalc
                 notes.Reverse(current.edgeStart, current.edgeEnd - current.edgeStart);
             }
             notes.Reverse();
+            if (notes.Count == 1)
+            {
+                notes[0].quantity += current.frequency;
+            }
             return notes;
         }
 

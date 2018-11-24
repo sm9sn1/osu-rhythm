@@ -59,6 +59,7 @@ namespace ppcalc
             }
             //last note has no next note
             notes[notes.Count - 1].duration = 0;
+            notes.Add(new Note(-1, -1, NoteType.circle));
             return notes;
         }
 
@@ -98,35 +99,21 @@ namespace ppcalc
 
 /*
  TODO:
+    bugfixing
+        findpath out of bounds issue 
+            start += i = s.Count, not sure if this is the incorrect state 
+            or if it is a math error
+
+Done:
  the compression issue has 2 cases afaik
-    1. the compressed note is the only note the subsequence, this
+ 1. the compressed note is the only note the subsequence, this
     is where the frequency needs to be counted to reflect the number 
     of times that note exists in the map (note.quantity + node.frequency)
-    2. the compressed note isn't the only note in the subsequence,
+ 2. the compressed note isn't the only note in the subsequence,
     the trie currently doesn't care about quantity at all during construction 
     so it will think notes are the same when they arent. a fix for this might 
     be as simple as adding quantity as an equality condition
-    
-    
-     may have to switch from compressed suffix trie to uncompressed
-     to track the frequency of each note properly
-        currently, each node and has a range of notes under it, and 
-        the current trie doesn't know about the identical note 
-        compression. it would be very hard to add this directly
-     maybe unify the note and node classes
-        continuation of the first todo, may be easier to have a node 
-        wrapper around exactly 1 note (uncompressed)
-     maybe abandon the compression and find some other way to remove 
-     the noise from identical subsequences
-        this would involve adding a special terminal note somehow,
-        maybe i should try it without compression and see if its
-        acceptable
- maybe rewrite the suffixtrie code to use lists instead of linked 
- lists
-    this is probably not worthwhile unless i have to redo it anyway
 
-
-Done:
  get several sample map files to test with
  maybe revert the generic versions of trie and node
     they may prove more trouble then they are worth during testing
@@ -135,4 +122,21 @@ Done:
     can have sections at different bpms, and ms is enough to 
     calculate map difficulty anyway
  write results to a file instead of the cli
+
+Abandoned:
+ rewrite the suffixtrie code to use lists instead of linked 
+ lists
+    this is probably not worthwhile unless i have to redo it anyway
+ switch from compressed suffix trie to uncompressed
+    to track the frequency of each note properly
+    currently, each node and has a range of notes under it, and 
+    the current trie doesn't know about the identical note 
+    compression. it would be very hard to add this directly
+ unify the note and node classes
+    continuation of the first todo, may be easier to have a node 
+    wrapper around exactly 1 note (uncompressed)
+ abandon the compression and find some other way to remove 
+    the noise from identical subsequences
+    this would involve adding a special terminal note somehow,
+    maybe i should try it without compression and see if its
 */
