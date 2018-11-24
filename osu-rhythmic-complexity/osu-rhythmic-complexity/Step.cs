@@ -28,7 +28,7 @@ namespace ppcalc
         public bool Equals(Note other)
         {
             Note rhs = (Note)other;
-            return Math.Abs(this.duration - rhs.duration) <= 1 && this.type == rhs.type && this.quantity == rhs.quantity;
+            return Math.Abs(this.duration - rhs.duration) <= 2 && this.type == rhs.type && this.quantity == rhs.quantity;
         }
 
         public int CompareTo(Note other)

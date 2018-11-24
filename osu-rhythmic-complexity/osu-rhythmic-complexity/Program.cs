@@ -52,10 +52,10 @@ namespace ppcalc
                 }
             }
             //timing value in file is milliseconds since map start
-            for (int i = notes.Count; i > 0; i--)
+            for (int i = notes.Count - 1; i > 0; i--)
             {
                 //calculate time until next note
-                notes[i - 1].duration = notes[i].duration - notes[i - 1].duration;
+                notes[i].duration = notes[i].duration - notes[i - 1].duration;
             }
             //last note has no next note
             notes[notes.Count - 1].duration = 0;
@@ -65,7 +65,7 @@ namespace ppcalc
         static List<Note> compress(List<Note> notes) {
             for (int i = notes.Count - 1; i > 0; i--) {
                 //if 2 sequential notes are equal, group them together
-                if (notes[i] == notes[i - 1]) {
+                if (Math.Abs(notes[i].duration - notes[i - 1].duration) <= 2 && notes[i].type == notes[i - 1].type) {
                     notes[i - 1].quantity += notes[i].quantity;
                     notes.RemoveAt(i);
                 }
@@ -125,9 +125,9 @@ namespace ppcalc
  lists
     this is probably not worthwhile unless i have to redo it anyway
 
- get several sample map files to test with
 
 Done:
+ get several sample map files to test with
  maybe revert the generic versions of trie and node
     they may prove more trouble then they are worth during testing
  write a note.ToString() to make output readable
