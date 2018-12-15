@@ -101,14 +101,14 @@ namespace ppcalc
 
 /*
  TODO:
-    figure out how to handle length 1 subsequences properly 
-        only the first compressed sequence is counted
     bugfixing
         findpath out of bounds issue 
             start += i = s.Count, not sure if this is the incorrect state 
             or if it is a math error
 
 Done:
+figure out how to handle length 1 subsequences properly 
+    only the first compressed sequence is counted
  the compression issue has 2 cases afaik
  1. the compressed note is the only note the subsequence, this
     is where the frequency needs to be counted to reflect the number 

@@ -32,9 +32,9 @@ namespace ppcalc
                 edgeEnd = _end;
                 edgeStart = _start;
                 depth = parent.depth + (_end - _start) + 1;
-
             }
-            public Node getChild(Note c)
+
+            /*public Node getChild(Note c)
             {
                 Node temp = this.child;
                 while (temp != null && s[temp.edgeStart] != c)
@@ -42,6 +42,24 @@ namespace ppcalc
                     temp = temp.sibling;
                 }
                 return temp;
+            }*/
+
+            public Node getChild(Note c)
+            {
+                if (this.child == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    Node temp = this.child;
+                    while (temp != null && s[temp.edgeStart] != c)
+                    {
+                        temp = temp.sibling;
+                    }
+                    //null if not found or desired node
+                    return temp;
+                }
             }
 
             public Node addChild(Node newNode)
@@ -52,7 +70,7 @@ namespace ppcalc
                 }
                 else
                 {
-                    if (s[newNode.edgeStart].CompareTo(s[this.child.edgeStart]) < 0)
+                    if (s[newNode.edgeStart] < s[this.child.edgeStart])
                     {
                         newNode.sibling = this.child;
                         this.child = newNode;
@@ -67,7 +85,7 @@ namespace ppcalc
                     {
                         Node temp = this.child.sibling;
                         Node prevTemp = this.child;
-                        while (temp != null && s[newNode.edgeStart].CompareTo(s[temp.edgeStart]) > 0)
+                        while (temp != null && s[newNode.edgeStart] > s[temp.edgeStart])
                         {
                             prevTemp = temp;
                             temp = temp.sibling;
